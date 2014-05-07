@@ -105,3 +105,13 @@ else
     exit
 end
 testcases_full_names.each do |key,value|
+if key!=""
+        report.write("===========================#{key.upcase}============================\n")
+    else
+        report.write("==========NOT EXECUTED(missing logs in given directory)====\n")
+    end
+    value.each do |k,v|;report.write("#{k}\n");end
+end
+report.close
+
+puts "Time elapsed #{Time.now - beginning} seconds"
