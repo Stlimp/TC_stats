@@ -19,3 +19,28 @@ FileMask := LOG_ALL|MATCHING|USER
 MatchingHints := Detailed
 
 [EXECUTE]">testdir/titan.cfg
+
+
+for i in {1..10000}; do 
+echo -e "TC_MMTCG_TCs.TC_MMTCG_NCBP00$i">>testdir/titan.cfg; 
+for j in {1..3}; do
+random=$[1 + $[ RANDOM % 3 ]];
+	if [ "$random" -eq 1 ]
+	then
+		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-pass-ealekry.tgz;
+	fi
+	if [ "$random" -eq 2 ]
+	then
+		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-fail-ealekry.tgz;
+	fi
+	if [ "$random" -eq 3 ]
+	then
+		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-error-ealekry.tgz;
+	fi
+
+done
+done
+
+echo "SCRIPT STARTED!"
+./script.rb;
+#cat report.txt
