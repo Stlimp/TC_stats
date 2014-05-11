@@ -49,6 +49,27 @@ done
 
 #Statistics and report
 
+if [ $NEGATIVE -eq 0 ];
+then  
+  echo -e "===========================PASS============================">>stats.txt
+  for list in $LISTA
+  do
+        pass=$(cat /tmp/checkThose.log| grep $list | grep pass | wc -l)
+        fail=$(cat /tmp/checkThose.log| grep $list | grep fail | wc -l)
+        error=$(cat /tmp/checkThose.log| grep $list | grep error | wc -l)
+               
+        if [ $pass -gt 0 ] && [ $fail -eq 0 ] && [ $error -eq 0 ]; then
+          #echo -e "$list" >> stats.txt
+          cat $TC_LIST|grep $list>>stats.txt
+		  if [ $LIST_LOGS -ne 0 ];
+          then
+          ls $1| grep $list >> stats.txt
+          fi
+          let PASS+=1
+        fi
+        
+  done
+fi
 echo -e "===========================PASS_ON_RERUN============================">>stats.txt
 for list in $LISTA
 do
@@ -85,7 +106,23 @@ do
         fi
 done
 
-
+echo -e "===========================ERROR============================">>stats.txt
+for list in $LISTA
+do
+        pass=$(cat /tmp/checkThose.log| grep $list | grep pass | wc -l)
+        fail=$(cat /tmp/checkThose.log| grep $list | grep fail | wc -l)
+        error=$(cat /tmp/checkThose.log| grep $list | grep error | wc -l)
+               
+        if [ $pass -eq 0 ] && [ $fail -eq 0 ] && [ $error -gt 0 ]; then
+#          echo -e "$list">>stats.txt
+		  cat $TC_LIST|grep $list>>stats.txt
+          if [ $LIST_LOGS -ne 0 ];
+          then
+          ls $1| grep $list >> stats.txt
+          fi
+          let ERROR+=1
+        fi
+done   
 
 echo -e "===========================FAIL============================">>stats.txt
 for list in $LISTA
@@ -105,47 +142,6 @@ do
         fi
 done  
 
-if [ $NEGATIVE -eq 0 ];
-then  
-  echo -e "===========================PASS============================">>stats.txt
-  for list in $LISTA
-  do
-        pass=$(cat /tmp/checkThose.log| grep $list | grep pass | wc -l)
-        fail=$(cat /tmp/checkThose.log| grep $list | grep fail | wc -l)
-        error=$(cat /tmp/checkThose.log| grep $list | grep error | wc -l)
-               
-        if [ $pass -gt 0 ] && [ $fail -eq 0 ] && [ $error -eq 0 ]; then
-          #echo -e "$list" >> stats.txt
-          cat $TC_LIST|grep $list>>stats.txt
-		  if [ $LIST_LOGS -ne 0 ];
-          then
-          ls $1| grep $list >> stats.txt
-          fi
-          let PASS+=1
-        fi
-        
-  done
-fi
-
-
-echo -e "===========================ERROR============================">>stats.txt
-for list in $LISTA
-do
-        pass=$(cat /tmp/checkThose.log| grep $list | grep pass | wc -l)
-        fail=$(cat /tmp/checkThose.log| grep $list | grep fail | wc -l)
-        error=$(cat /tmp/checkThose.log| grep $list | grep error | wc -l)
-               
-        if [ $pass -eq 0 ] && [ $fail -eq 0 ] && [ $error -gt 0 ]; then
-#          echo -e "$list">>stats.txt
-		  cat $TC_LIST|grep $list>>stats.txt
-          if [ $LIST_LOGS -ne 0 ];
-          then
-          ls $1| grep $list >> stats.txt
-          fi
-          let ERROR+=1
-        fi
-done    
-
 
 if [ $LIST_LOGS -ne 0 ];
 then
@@ -164,15 +160,15 @@ TOTAL=`cat $TC_LIST |wc -l`
 #fi
 #echo -e "PASS with Rerun: $PASSwRERUN">> stats.txt
 #echo -e "=========================================== END==========================================\n">> stats.txt
-echo -e "======================================== Summary======================================\n"
-echo -e "TOTAL: $TOTAL"
-echo -e "FAIL: $FAIL"
-echo -e "ERROR: $ERROR"
-echo -e "INCONCR: $INCONCR"
-if [ $NEGATIVE -eq 0 ];
-then
-  echo -e "PASS: $PASS"
-fi
-echo -e "PASS with Rerun: $PASSwRERUN"
+#echo -e "======================================== Summary======================================\n"
+#echo -e "TOTAL: $TOTAL"
+#echo -e "FAIL: $FAIL"
+#echo -e "ERROR: $ERROR"
+#echo -e "INCONCR: $INCONCR"
+#if [ $NEGATIVE -eq 0 ];
+#then
+#  echo -e "PASS: $PASS"
+#fi
+#echo -e "PASS with Rerun: $PASSwRERUN"
 rm -f /tmp/checkThose.log
 rm -f /tmp/list
