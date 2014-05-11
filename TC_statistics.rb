@@ -13,6 +13,7 @@
 #  9. Remove hardcode for titan.cfg
 #TODO
 
+beginning=Time.now
 
 case ARGV[0].nil?
 when false
@@ -32,8 +33,6 @@ when false
 else
 	titan_cfg="#{Dir.home}/GIT/testdir/titan.cfg"
 end
-
-beginning=Time.now
 
 if !File.writable?(Dir.pwd)
     puts "Can't create report in given directory. Exit"
@@ -133,6 +132,7 @@ if DEBUG
 end
 
 #Create report
+puts "Summary: "
 report = File.open(output_file,"w")
 testcases_full_names.each do |key,value|
 if key!=""
@@ -141,6 +141,8 @@ if key!=""
         report.write("==========NOT EXECUTED(missing logs in given directory)====\n")
     end
     value.each do |k,v|;report.write("#{k}\n");end
+	report.write ("TOTAL: #{value.length}\n")
+	puts "#{key.upcase} : #{value.length}"
 end
 report.close
 
