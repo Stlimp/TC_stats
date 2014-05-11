@@ -21,26 +21,41 @@ MatchingHints := Detailed
 [EXECUTE]">testdir/titan.cfg
 
 
-for i in {1..10000}; do 
+for i in {1..100}; do 
 echo -e "TC_MMTCG_TCs.TC_MMTCG_NCBP00$i">>testdir/titan.cfg; 
+echo -e "TC_MMTCG_TCs.TC_MMTCG_NCBP00$i">>testdir/titan_user.cfg;
 for j in {1..3}; do
 random=$[1 + $[ RANDOM % 3 ]];
 	if [ "$random" -eq 1 ]
 	then
-		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-pass-ealekry.tgz;
+		touch testdir/TC_MMTCG_NCBP00${i}-29999999_999999-999s-pass-ealekry.tgz;
 	fi
 	if [ "$random" -eq 2 ]
 	then
-		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-fail-ealekry.tgz;
+		touch testdir/TC_MMTCG_NCBP00${i}-29999999_999999-999s-fail-ealekry.tgz;
 	fi
 	if [ "$random" -eq 3 ]
 	then
-		touch testdir/TC_MMTCG_NCBP00${i}-20140117_221001-605s-error-ealekry.tgz;
+		touch testdir/TC_MMTCG_NCBP00${i}-29999999_999999-999s-error-ealekry.tgz;
 	fi
 
 done
 done
 
-echo "SCRIPT STARTED!"
-./TC_statistics.rb;
+echo "Script without parameters"
+
+./TC_statistics.rb
+echo "Script with both parameters"
+./TC_statistics.rb ~/GIT/testdir ~/GIT/testdir/titan_user.cfg;
+mv report.txt report_user.txt
+echo "Script with first parameter"
+./TC_statistics.rb ~/GIT/testdir;
+echo "Diff between report and report_user"
+diff report.txt report_user.txt
+
+rm -rf stats.txt;
+./TC_statistics.bash  ~/GIT/testdir  ~/GIT/testdir/titan_user.cfg;
+#echo "Diff between report and stats"
+#diff report.txt stats.txt
+
 #cat report.txt
