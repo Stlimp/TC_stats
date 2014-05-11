@@ -3,20 +3,44 @@
 #TODO 
 #  0. Comment code
 #  1. Naming conventions (https://github.com/bbatsov/ruby-style-guide, https://github.com/bbatsov/rubocop)
-#  2. Read parameters from cmd(http://stackoverflow.com/questions/9897593/accepting-command-line-arguments-into-a-ruby-script)
+#  done Read parameters from cmd(http://stackoverflow.com/questions/9897593/accepting-command-line-arguments-into-a-ruby-script)
 #  3. Read and write to report TTCN labels
 #  4. Parse tiger.cfg for build label
 #  5. Better format of report
 #  6. Remove unnessesesary variables
 #  7. Report improvement
-#  8. Remove hardcoded strings
-#  
+#  done Remove hardcoded strings
+#  9. Remove hardcode for titan.cfg
 #TODO
+
+
+case ARGV[0].nil?
+when false
+	logs_path=ARGV[0]
+else
+	puts <<-EOF
+	USAGE: TC_statistics.rb logs_path TC_list_file
+	OR: TC_statistics.rb logs_path (TC list will be taken from titan.cfg)
+	OUTPUT: report.txt in current dir
+	EOF
+	exit 1
+end
+
+case ARGV[1].nil?
+when false
+	titan_cfg=ARGV[1]
+else
+	titan_cfg="#{Dir.home}/GIT/testdir/titan.cfg"
+end
+
 beginning=Time.now
 
-logs_path= "/home/st/GIT/testdir"
-output_file="/home/st/GIT/report.txt"
-titan_cfg="/home/st/GIT/testdir/titan.cfg"
+if !File.writable?(Dir.pwd)
+    puts "Can't create report in given directory. Exit"
+    exit
+end
+
+output_file="#{Dir.pwd}/report.txt"
 DEBUG=false
 
 
@@ -36,13 +60,22 @@ end
 #getting list of testcases ->hash
 testcases_full_names=Hash.new {|testname,verdict|}
 @found=false;
-titan.each_line do |line|
-    if @found
-        testcases_full_names[line.strip]=""
-    end
-    if line =~ /\[EXECUTE\]/
-        @found=true
-    end
+
+
+case ARGV[1].nil?
+when true 
+	titan.each_line do |line|
+    	if @found
+        	testcases_full_names[line.strip]=""
+    	end
+    	if line =~ /\[EXECUTE\]/
+        	@found=true
+    	end
+	end
+when false
+	titan.each_line do |line|
+		testcases_full_names[line.strip]=""
+	end
 end
 titan.close()
 
@@ -98,13 +131,9 @@ if DEBUG
         value.each do |k,v|;puts k;end
     end
 end
-if File.writable?("/home/st/GIT/")#TODO burn the hardcode!!!
 
-    report = File.open(output_file,"w")
-else
-    puts "Can't create report in given directory. Exit"
-    exit
-end
+#Create report
+report = File.open(output_file,"w")
 testcases_full_names.each do |key,value|
 if key!=""
         report.write("===========================#{key.upcase}============================\n")
