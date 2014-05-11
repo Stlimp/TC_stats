@@ -42,5 +42,5 @@ done
 done
 
 echo "SCRIPT STARTED!"
-./script.rb;
+./TC_statistics.rb;
 #cat report.txt

@@ -14,8 +14,9 @@
 #TODO
 beginning=Time.now
 
-logs_path= "/home/edamlas/logs/regression/wp204_d2_012_20140417"
-output_file="/home/ealekry/scripts/ruby/report.txt"
+logs_path= "/home/st/GIT/testdir"
+output_file="/home/st/GIT/report.txt"
+titan_cfg="/home/st/GIT/testdir/titan.cfg"
 DEBUG=false
 
 
@@ -25,8 +26,8 @@ Dir.glob("*.tgz").each do |filename|
 test_results.push filename
 
 end
-if File.exists?("/home/ealekry/scripts/ruby/testdir/titan.cfg")
-    titan=File.open("/home/ealekry/scripts/ruby/testdir/titan.cfg","rb")
+if File.exists?(titan_cfg)
+    titan=File.open(titan_cfg,"rb")
 else
     puts "titan.cfg not found"
     exit 
@@ -97,7 +98,7 @@ if DEBUG
         value.each do |k,v|;puts k;end
     end
 end
-if File.writable?("/home/ealekry/scripts/ruby/")#TODO burn the hardcode!!!
+if File.writable?("/home/st/GIT/")#TODO burn the hardcode!!!
 
     report = File.open(output_file,"w")
 else
